@@ -31,4 +31,4 @@ O app permite que usuários conversem com uma IA em tempo real, recebendo respos
 Clone o projeto:
 
 ```bash
-git clone https://github.com/seu-usuario/seu-repo.git
+git clone https://github.com/hiagoka/ai-chat-mobile.git
