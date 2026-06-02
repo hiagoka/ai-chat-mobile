@@ -34,7 +34,7 @@ Reduz o atrito de adoção ao eliminar etapas de cadastro. O histórico local cr
 
 ## 3. Demonstração
 
-> Em desenvolvimento — deploy e GIF em breve.
+https://github.com/user-attachments/assets/cf134fc1-cc40-4e05-8941-0d47540ed837
 
 Fluxo principal:
 1. Onboarding de 3 slides na primeira abertura
