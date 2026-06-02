@@ -1,19 +1,26 @@
-
-import { Colors, Fonts } from "@/constants/theme";
 import { StyleSheet } from "react-native";
+import { ColorScheme } from "@/constants/theme";
 
-export const styles = StyleSheet.create({
+export const createStyles = (colors: ColorScheme) =>
+  StyleSheet.create({
     container: {
-        padding: 16,
-        borderBottomWidth: 1,
-        borderColor: Colors.border,
-        alignSelf: "center",
-        marginBottom: 25,
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 12,
+      paddingVertical: 14,
+      borderBottomWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.background,
+    },
+    menuBtn: {
+      width: 36,
+      alignItems: "center",
     },
     title: {
-        fontSize: 18,
-        fontWeight: "bold",
-        color: Colors.text,
-        fontFamily: Fonts.mono,
-    }
-})
+      flex: 1,
+      fontSize: 16,
+      fontWeight: "bold",
+      color: colors.text,
+      textAlign: "center",
+    },
+  });

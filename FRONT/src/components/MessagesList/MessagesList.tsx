@@ -2,7 +2,7 @@ import { FlatList } from "react-native";
 import { useRef } from "react";
 
 import { MessageBubble } from "../MessageBubble/MessageBubble";
-import { Message } from "@/src/types/Message";
+import { Message } from "@/src/types";
 
 type Props = {
   messages: Message[];

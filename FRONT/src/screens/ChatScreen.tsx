@@ -1,52 +1,58 @@
-import { View } from "react-native";
+import { StatusBar, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { useState } from "react";
 
 import { ChatHeader } from "../components/ChatHeader/ChatHeader";
 import { MessagesList } from "../components/MessagesList/MessagesList";
 import { ChatInput } from "../components/ChatInput/ChatInput";
-import { Message } from "../types/Message";
-import { styles } from "./styles";
-import axios from "axios";
+import { Sidebar } from "../components/Sidebar/Sidebar";
+import { useConversations } from "../hooks/useConversations";
+import { useTheme } from "../context/ThemeContext";
 
 export default function ChatScreen() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { colors, isDark } = useTheme();
+  const styles = StyleSheet.create({ container: { flex: 1, backgroundColor: colors.background } });
+  const {
+    conversations,
+    activeConversation,
+    activeId,
+    isLoading,
+    setActiveId,
+    createConversation,
+    deleteConversation,
+    sendMessage,
+  } = useConversations();
 
-  // função que chama o backend
-  const sendMessageToBackend = async (text: string) => {
-    try {
-      const res = await axios.post("http://localhost:3000/chat", { message: text });
-      return res.data.message; // resposta da IA
-    } catch (error) {
-      return "Erro ao enviar para IA";
-    }
-  };
-
-  const handleSend = async (text: string) => {
-    // mensagem do usuário
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      text,
-      sender: "user",
-    };
-    setMessages((prev) => [...prev, newMessage]);
-
-    // chamada da IA
-    const aiReplyText = await sendMessageToBackend(text);
-
-    // mensagem da IA
-    const aiMessage: Message = {
-      id: Date.now().toString() + "-ai",
-      text: aiReplyText,
-      sender: "ai",
-    };
-    setMessages((prev) => [...prev, aiMessage]);
+  const handleNewChat = () => {
+    createConversation();
+    setSidebarOpen(false);
   };
 
   return (
-    <View style={styles.container}>
-      <ChatHeader />
-      <MessagesList messages={messages} />
-      <ChatInput onSend={handleSend} />
-    </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
+
+      <ChatHeader
+        title="AI Chat"
+        onMenuPress={() => setSidebarOpen(true)}
+      />
+
+      <MessagesList messages={activeConversation?.messages ?? []} />
+
+      <ChatInput onSend={sendMessage} disabled={isLoading} />
+
+      <Sidebar
+        visible={sidebarOpen}
+        conversations={conversations}
+        activeId={activeId}
+        onSelect={setActiveId}
+        onNewChat={handleNewChat}
+        onDelete={deleteConversation}
+        onClose={() => setSidebarOpen(false)}
+      />
+    </KeyboardAvoidingView>
   );
 }

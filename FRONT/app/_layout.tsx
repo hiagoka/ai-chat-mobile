@@ -1,23 +1,21 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '@/constants/theme';
+import { Stack } from "expo-router";
+import "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ThemeProvider, useTheme } from "@/src/context/ThemeContext";
 
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+function Layout() {
+  const { colors } = useTheme();
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+      <Stack screenOptions={{ headerShown: false }} />
+    </SafeAreaView>
+  );
+}
 
 export default function RootLayout() {
-
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: Colors.background}}>
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
-    </SafeAreaView>
+    <ThemeProvider>
+      <Layout />
+    </ThemeProvider>
   );
 }

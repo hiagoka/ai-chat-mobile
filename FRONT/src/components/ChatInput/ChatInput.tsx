@@ -1,39 +1,46 @@
-import { useState } from "react"
-import { View, TextInput, TouchableOpacity } from "react-native"
-
-import {MaterialIcons} from '@expo/vector-icons'
-
-import { styles } from "./styles"
-import { Colors } from "@/constants/theme"
+import { useState, useMemo } from "react";
+import { View, TextInput, TouchableOpacity } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useTheme } from "@/src/context/ThemeContext";
+import { createStyles } from "./styles";
 
 type Props = {
-    onSend: (text: string) => void
-}
+  onSend: (text: string) => void;
+  disabled?: boolean;
+};
 
-export function ChatInput({onSend}: Props){
-    const [text, setText] = useState("")
+export function ChatInput({ onSend, disabled = false }: Props) {
+  const [text, setText] = useState("");
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
-    const handleSend = () => {
-        if (!text.trim()) return;
+  const canSend = text.trim().length > 0 && !disabled;
 
-        onSend(text)
-        setText("")
-    }
+  const handleSend = () => {
+    if (!canSend) return;
+    onSend(text);
+    setText("");
+  };
 
-    return (
-        <View style={styles.container}>
-            <TextInput 
-            style= {styles.input}
-            placeholder="Digite uma mensagem..."
-            placeholderTextColor={Colors.placeholder}
-            value={text}
-            onChangeText={setText}
-            onSubmitEditing={handleSend}
-            returnKeyType="send"
-            />
-            <TouchableOpacity onPress={handleSend}>
-                <MaterialIcons name="send" size={35} color= {Colors.primary}/>
-            </TouchableOpacity>
-        </View>
-    )
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={[styles.input, disabled && styles.inputDisabled]}
+        placeholder={disabled ? "Aguardando resposta..." : "Digite uma mensagem..."}
+        placeholderTextColor={colors.placeholder}
+        value={text}
+        onChangeText={setText}
+        onSubmitEditing={handleSend}
+        returnKeyType="send"
+        editable={!disabled}
+      />
+      <TouchableOpacity onPress={handleSend} disabled={!canSend}>
+        <MaterialIcons
+          name={disabled ? "hourglass-top" : "send"}
+          size={35}
+          color={canSend ? colors.primary : colors.placeholder}
+        />
+      </TouchableOpacity>
+    </View>
+  );
 }
